@@ -32,7 +32,7 @@
           }
         }
       }
-      url = url.slice(0, -1);//去掉最后一个&
+      url = url.slice(0, -1);
       config.params = {};
       config.url = url;
     }

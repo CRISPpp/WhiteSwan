@@ -1,6 +1,7 @@
 package com.crisp.saleproject.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.crisp.saleproject.common.BaseContext;
 import com.crisp.saleproject.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.AntPathMatcher;
@@ -31,7 +32,7 @@ public class LoginFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         //log.info("拦截到请求：{}",request.getRequestURI());
         String uri = request.getRequestURI();
-
+        log.info(String.valueOf(Thread.currentThread()));
         //不需要处理的url
         String[] urls = {
                 "/employee/login",
@@ -46,7 +47,9 @@ public class LoginFilter implements Filter {
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;
         }
-        if(request.getSession().getAttribute("employee") != null){
+        Long id = (Long) request.getSession().getAttribute("employee");
+        if(id != null){
+            BaseContext.setCurrentId(id);
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;

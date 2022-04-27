@@ -11,6 +11,5 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 public class SaleProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(SaleProjectApplication.class,args);
-        log.info("项目跑起来了");
     }
 }

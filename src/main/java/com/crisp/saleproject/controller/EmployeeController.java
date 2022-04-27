@@ -29,6 +29,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
 
+
     /**
      * 员工登录
      * 密码进行md5加密判断
@@ -84,11 +85,11 @@ public class EmployeeController {
         //初始密码为123456
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes(StandardCharsets.UTF_8)));
         //status数据库默认为1
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
         Long empId = (Long) request.getSession().getAttribute("employee");
-        employee.setCreateUser(empId);
-        employee.setUpdateUser(empId);
+//        employee.setCreateUser(empId);
+//        employee.setUpdateUser(empId);
 
         employeeService.save(employee);
         return R.success("新增员工成功");
@@ -117,9 +118,18 @@ public class EmployeeController {
      */
     @PutMapping
     public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser((Long)request.getSession().getAttribute("employee"));
+        log.info(String.valueOf(Thread.currentThread()));
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser((Long)request.getSession().getAttribute("employee"));
         employeeService.updateById(employee);
         return R.success("修改成功");
+    }
+
+
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id){
+        Employee employee = employeeService.getById(id);
+        if(employee == null) return R.error("未找到员工");
+        return R.success(employee);
     }
 }

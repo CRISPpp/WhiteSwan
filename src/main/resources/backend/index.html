@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>疫情志愿服务系统</title>
-    <link rel="shortcut icon" href="headImg.jpg">
+    <title>白天鹅</title>
+    <link rel="shortcut icon" href="favicon.ico">
     <!-- 引入样式 -->
     <link rel="stylesheet" href="plugins/element-ui/index.css" />
     <link rel="stylesheet" href="styles/common.css" />
@@ -30,9 +30,9 @@
       <div class="app-wrapper openSidebar clearfix">
         <!-- sidebar -->
         <div class="sidebar-container">
-          <div class="logo">
+          <div class="logo" style="padding: 0; padding-bottom: 50px; padding-top: 50px; ">
             <!-- <img src="images/logo.png" width="122.5" alt="" /> -->
-            <img src="images/login/login-logo.png" alt="" style="width: 100px; height: 100px" />
+            <img src="images/login/login-logo.png" alt="" style="width: 128px; height: 155px; position: center;" />
           </div>
 
           <el-scrollbar wrap-class="scrollbar-wrapper">
@@ -124,7 +124,7 @@
               //   children: [
                   {
                     id: '2',
-                    name: '志愿者管理',
+                    name: '员工管理',
                     url: 'page/member/list.html',
                     icon: 'icon-member'
                   },
@@ -183,7 +183,6 @@
               if(res.code === 1){
                 localStorage.removeItem('userInfo')
                 window.location.href = '/backend/page/login/login.html'
-
               }
             })
           },

@@ -137,7 +137,6 @@
               page: this.page,
               pageSize: this.pageSize,
               name: this.input ? this.input : undefined
-              //params前端被转成非JSON格式是因为在request.js设置了拦截器
             }
             await getMemberList(params).then(res => {
               if (String(res.code) === '1') {
