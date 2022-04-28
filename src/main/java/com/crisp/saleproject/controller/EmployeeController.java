@@ -73,7 +73,7 @@ public class EmployeeController {
      * @return
      */
     @PostMapping
-    public R<String> save(HttpServletRequest request, @RequestBody Employee employee){
+    public R<String> save( @RequestBody Employee employee){
         //用户已存在就不新增
         LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Employee::getUsername, employee.getUsername());
@@ -87,7 +87,7 @@ public class EmployeeController {
         //status数据库默认为1
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
-        Long empId = (Long) request.getSession().getAttribute("employee");
+        if(employee.getIsDeleted() == null) employee.setIsDeleted(0);
 //        employee.setCreateUser(empId);
 //        employee.setUpdateUser(empId);
 
