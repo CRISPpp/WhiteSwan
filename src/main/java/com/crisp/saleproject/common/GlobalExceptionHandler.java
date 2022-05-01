@@ -34,4 +34,9 @@ public class GlobalExceptionHandler {
 
         return R.error("SQLIntegrityConstraintViolationException错误: " + ex.getMessage());
     }
+
+    @ExceptionHandler(CustomException.class)
+    public R<String> customExceptionHanlder(CustomException ex){
+        return R.error(ex.getMessage());
+    }
 }

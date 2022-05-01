@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crisp.saleproject.common.R;
 import com.crisp.saleproject.entity.Category;
+import com.crisp.saleproject.mapper.CategoryMapper;
 import com.crisp.saleproject.service.CategoryService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,8 @@ import javax.servlet.http.HttpServletRequest;
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
-
+    @Autowired
+    private CategoryMapper categoryMapper;
     /**
      * 分页
      * @param page
@@ -48,6 +50,11 @@ public class CategoryController {
         if(categoryService.getOne(wrapper) != null){
             return R.error("分类已经存在，添加失败");
         }
+        Category category1 = categoryMapper.getCaById(category.getName());
+        if(category1 != null){
+            categoryMapper.upddateIsDel(category.getName());
+            return R.success("添加 成功");
+        }
         if(category.getIsDeleted() == null) category.setIsDeleted(0);
         categoryService.save(category);
         return R.success("添加成功");
@@ -62,7 +69,18 @@ public class CategoryController {
         wrapper.eq(Category::getId, ids);
         Category category = categoryService.getOne(wrapper);
         if(category == null) return R.error("请求错误，检索不到id");
-        categoryService.removeById(ids);
+        categoryService.remove(ids);
         return R.success("删除成功");
+    }
+
+    /**
+     * 修改分类信息
+     */
+    @PutMapping
+    public R<String> editCategory(@RequestBody Category category){
+        if(categoryService.getById(category.getId()) == null) return R.error("id不存在");
+
+        categoryService.updateById(category);
+        return R.success("修改成功");
     }
 }

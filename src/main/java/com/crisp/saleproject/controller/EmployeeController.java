@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crisp.saleproject.common.R;
 import com.crisp.saleproject.entity.Employee;
+import com.crisp.saleproject.mapper.EmployeeMapper;
 import com.crisp.saleproject.service.impl.EmployeeServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,8 @@ public class EmployeeController {
 
     @Autowired
     private EmployeeService employeeService;
-
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
 
     /**
@@ -87,10 +89,13 @@ public class EmployeeController {
         //status数据库默认为1
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
+        if(employeeMapper.getEmById(employee.getUsername()) != null){
+            employeeMapper.upddateIsDel(employee.getUsername());
+            return R.success("添加成功");
+        }
         if(employee.getIsDeleted() == null) employee.setIsDeleted(0);
 //        employee.setCreateUser(empId);
 //        employee.setUpdateUser(empId);
-
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
@@ -117,7 +122,7 @@ public class EmployeeController {
      * @return
      */
     @PutMapping
-    public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
+    public R<String> update(@RequestBody Employee employee){
         log.info(String.valueOf(Thread.currentThread()));
 //        employee.setUpdateTime(LocalDateTime.now());
 //        employee.setUpdateUser((Long)request.getSession().getAttribute("employee"));
