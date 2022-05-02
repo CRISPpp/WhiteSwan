@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 分类管理
@@ -55,7 +56,7 @@ public class CategoryController {
             categoryMapper.upddateIsDel(category.getName());
             return R.success("添加 成功");
         }
-        if(category.getIsDeleted() == null) category.setIsDeleted(0);
+//        if(category.getIsDeleted() == null) category.setIsDeleted(0);
         categoryService.save(category);
         return R.success("添加成功");
     }
@@ -82,5 +83,17 @@ public class CategoryController {
 
         categoryService.updateById(category);
         return R.success("修改成功");
+    }
+
+    /**
+     * 展示分类
+     */
+    @GetMapping("/list")
+    public R<List<Category>> getList(Category category){//为了复用，所以传的是category
+        LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(category.getType() != null, Category::getType, category.getType());
+        wrapper.orderByAsc(Category::getSort).orderByDesc(Category::getUpdateTime);
+        List<Category> ret = categoryService.list(wrapper);
+        return R.success(ret);
     }
 }

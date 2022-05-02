@@ -93,7 +93,7 @@ public class EmployeeController {
             employeeMapper.upddateIsDel(employee.getUsername());
             return R.success("添加成功");
         }
-        if(employee.getIsDeleted() == null) employee.setIsDeleted(0);
+//        if(employee.getIsDeleted() == null) employee.setIsDeleted(0);
 //        employee.setCreateUser(empId);
 //        employee.setUpdateUser(empId);
         employeeService.save(employee);

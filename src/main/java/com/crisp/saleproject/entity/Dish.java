@@ -65,6 +65,7 @@ public class Dish implements Serializable {
     private Long updateUser;
 
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     //是否删除
     private Integer isDeleted;
 

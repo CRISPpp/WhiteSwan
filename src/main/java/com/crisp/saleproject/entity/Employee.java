@@ -41,5 +41,6 @@ public class Employee implements Serializable {
     private Long updateUser;
 
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private Integer isDeleted;
 }
