@@ -7,11 +7,13 @@ import com.crisp.saleproject.common.R;
 import com.crisp.saleproject.dto.DishDto;
 import com.crisp.saleproject.entity.Category;
 import com.crisp.saleproject.entity.Dish;
+import com.crisp.saleproject.entity.DishFlavor;
 import com.crisp.saleproject.mapper.DishFlavorMapper;
 import com.crisp.saleproject.mapper.DishMapper;
 import com.crisp.saleproject.service.CategoryService;
 import com.crisp.saleproject.service.DishFlavorService;
 import com.crisp.saleproject.service.DishService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/dish")
 public class DishController {
@@ -90,4 +93,22 @@ public class DishController {
         dishService.updateWithFlavor(dishDto);
         return R.success("修改成功");
     }
+
+    /**
+     * 批量删除
+     */
+    @DeleteMapping
+    public R<String> deleteDish(Long[] ids){
+        for(Long id : ids){
+            //删除相关flavor
+            LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(DishFlavor::getDishId, id);
+            dishFlavorService.remove(wrapper);
+
+            //删除相关dish
+            dishService.removeById(id);
+        }
+        return R.success("删除成功");
+    }
+
 }

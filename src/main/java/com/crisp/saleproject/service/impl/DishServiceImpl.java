@@ -20,6 +20,8 @@ import java.util.stream.Collectors;
 public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements DishService {
     @Autowired
     DishFlavorService dishFlavorService;
+    @Autowired
+    DishMapper dishMapper;
     /**
      * dish 和 dishFlavor
      * @param dishDto
@@ -27,8 +29,17 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
     @Transactional//开启事务支持
     @Override
     public void saveWithFlavor(DishDto dishDto) {
-        //保存到dish
-        this.save(dishDto);
+        //修改isDeleted字段
+        String name = dishDto.getName();
+        Dish dish = dishMapper.getDishByName(name);
+        if(dish != null){
+            dishMapper.upddateIsDel(name);
+            dishDto.setId(dish.getId());
+        }
+        else {
+            //保存到dish
+            this.save(dishDto);
+        }
         //save后雪花算法已经生成了id，能直接获取
         Long dishId = dishDto.getId();
         List<DishFlavor> list = dishDto.getFlavors();
