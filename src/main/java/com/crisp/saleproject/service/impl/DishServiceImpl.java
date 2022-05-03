@@ -34,6 +34,11 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         Dish dish = dishMapper.getDishByName(name);
         if(dish != null){
             dishMapper.upddateIsDel(name);
+            dish.setCategoryId(dishDto.getCategoryId());
+            dish.setImage(dishDto.getImage());
+            dish.setPrice(dishDto.getPrice());
+            dish.setDescription(dishDto.getDescription());
+            this.updateById(dish);
             dishDto.setId(dish.getId());
         }
         else {

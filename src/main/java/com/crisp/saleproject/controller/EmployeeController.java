@@ -89,8 +89,13 @@ public class EmployeeController {
         //status数据库默认为1
 //        employee.setCreateTime(LocalDateTime.now());
 //        employee.setUpdateTime(LocalDateTime.now());
-        if(employeeMapper.getEmById(employee.getUsername()) != null){
+        Employee employee1 = employeeMapper.getEmById(employee.getUsername());
+        if(employee1 != null){
             employeeMapper.upddateIsDel(employee.getUsername());
+            employee1.setPhone(employee.getPhone());
+            employee1.setSex(employee.getSex());
+            employee1.setId(employee.getId());
+            employeeService.updateById(employee1);
             return R.success("添加成功");
         }
 //        if(employee.getIsDeleted() == null) employee.setIsDeleted(0);

@@ -111,4 +111,31 @@ public class DishController {
         return R.success("删除成功");
     }
 
+    /**
+     * 停售
+     */
+    @PostMapping("/status/0")
+    public R<String> stopSale(Long[] ids){
+        for(Long id : ids){
+            Dish dish = dishService.getById(id);
+            dish.setStatus(0);
+            dishService.updateById(dish);
+        }
+        return R.success("已停售");
+    }
+
+    /**
+     * 起售
+     * @param ids
+     * @return
+     */
+    @PostMapping("/status/1")
+    public R<String> startSale(Long[] ids){
+        for(Long id : ids){
+            Dish dish = dishService.getById(id);
+            dish.setStatus(1);
+            dishService.updateById(dish);
+        }
+        return R.success("已起售");
+    }
 }

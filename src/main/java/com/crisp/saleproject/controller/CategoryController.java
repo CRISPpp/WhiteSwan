@@ -53,7 +53,9 @@ public class CategoryController {
         }
         Category category1 = categoryMapper.getCaById(category.getName());
         if(category1 != null){
+            category1.setSort(category.getSort());
             categoryMapper.upddateIsDel(category.getName());
+            categoryService.updateById(category1);
             return R.success("添加 成功");
         }
 //        if(category.getIsDeleted() == null) category.setIsDeleted(0);
