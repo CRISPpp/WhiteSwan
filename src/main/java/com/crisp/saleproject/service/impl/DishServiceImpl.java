@@ -26,7 +26,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
      * dish 和 dishFlavor
      * @param dishDto
      */
-    @Transactional//开启事务支持
+    @Transactional//开启事务支持,要么全成功要么全失败
     @Override
     public void saveWithFlavor(DishDto dishDto) {
         //修改isDeleted字段
@@ -51,6 +51,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         for (DishFlavor dishFlavor : list) {
             dishFlavor.setDishId(dishId);
         }
+
         dishFlavorService.saveBatch(list);
     }
 

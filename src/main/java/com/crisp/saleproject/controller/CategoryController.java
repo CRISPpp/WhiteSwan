@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.crisp.saleproject.common.R;
 import com.crisp.saleproject.entity.Category;
+import com.crisp.saleproject.entity.Setmeal;
 import com.crisp.saleproject.mapper.CategoryMapper;
+import com.crisp.saleproject.mapper.SetmealMapper;
 import com.crisp.saleproject.service.CategoryService;
+import com.crisp.saleproject.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -24,6 +28,7 @@ public class CategoryController {
     private CategoryService categoryService;
     @Autowired
     private CategoryMapper categoryMapper;
+
     /**
      * 分页
      * @param page
@@ -56,10 +61,22 @@ public class CategoryController {
             category1.setSort(category.getSort());
             categoryMapper.upddateIsDel(category.getName());
             categoryService.updateById(category1);
+//            //修改Setmeal
+//            setmealMapper.upddateIsDel(category.getName());
             return R.success("添加 成功");
         }
 //        if(category.getIsDeleted() == null) category.setIsDeleted(0);
         categoryService.save(category);
+//        //2的话还要修改SetMeal
+//        if(category.getType() == 2){
+//            setmeal.setCategoryId(category.getId());
+//            setmeal.setName(category.getName());
+//            setmeal.setPrice(BigDecimal.valueOf(0));
+//            setmeal.setStatus(1);
+//            setmeal.setImage("1adaa0fc-ba29-43cd-9827-231f22b30a72.jpg");
+//            setmealService.save(setmeal);
+//        }
+
         return R.success("添加成功");
     }
 
@@ -72,6 +89,9 @@ public class CategoryController {
         wrapper.eq(Category::getId, ids);
         Category category = categoryService.getOne(wrapper);
         if(category == null) return R.error("请求错误，检索不到id");
+
+
+//        setmealService.removeById(ids);
         categoryService.remove(ids);
         return R.success("删除成功");
     }

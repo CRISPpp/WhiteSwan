@@ -16,6 +16,7 @@ import com.crisp.saleproject.service.DishService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -98,8 +99,15 @@ public class DishController {
      * 批量删除
      */
     @DeleteMapping
+    @Transactional
     public R<String> deleteDish(Long[] ids){
+        boolean flag = false;
         for(Long id : ids){
+            Dish dish = dishService.getById(id);
+            if(dish.getStatus() == 1){
+                flag = true;
+                continue;
+            }
             //删除相关flavor
             LambdaQueryWrapper<DishFlavor> wrapper = new LambdaQueryWrapper<>();
             wrapper.eq(DishFlavor::getDishId, id);
@@ -107,6 +115,9 @@ public class DishController {
 
             //删除相关dish
             dishService.removeById(id);
+        }
+        if(flag){
+            return R.error("请确定所有都为停售状态");
         }
         return R.success("删除成功");
     }
@@ -137,5 +148,20 @@ public class DishController {
             dishService.updateById(dish);
         }
         return R.success("已起售");
+    }
+
+    /**
+     * 根据条件查询菜品数据
+     * @param dish
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Dish>> gList(Dish dish){
+        LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+        wrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        wrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
+        wrapper.eq(Dish::getStatus, 1);
+        List<Dish> list = dishService.list(wrapper);
+        return R.success(list);
     }
 }

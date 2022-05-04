@@ -5,7 +5,6 @@ import com.crisp.saleproject.entity.Employee;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
 public interface EmployeeService extends IService<Employee> {
 
 }
