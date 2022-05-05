@@ -21,3 +21,4 @@ mybatis-plus:
 
 whiteswan:
   path: D:\SaleProject\SaleProject\img\
+  pathcode: D:\SaleProject\SaleProject\code.txt

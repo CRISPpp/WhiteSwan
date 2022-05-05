@@ -40,6 +40,8 @@ public class LoginFilter implements Filter {
                 "/backend/**",
                 "/front/**",
                 "/common/**",
+                "/user/sendMsg",
+                "/user/login"
         };
 
         boolean checkRet = check(urls, uri);
@@ -51,6 +53,13 @@ public class LoginFilter implements Filter {
         Long id = (Long) request.getSession().getAttribute("employee");
         if(id != null){
             BaseContext.setCurrentId(id);
+            filterChain.doFilter(request, response);
+            log.info("拦截到请求：{} : 放行",request.getRequestURI());
+            return;
+        }
+        //移动端用户
+        if(request.getSession().getAttribute("user") != null){
+            BaseContext.setCurrentId((Long)request.getSession().getAttribute("user"));
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;
