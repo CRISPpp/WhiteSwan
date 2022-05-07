@@ -17,10 +17,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -159,12 +161,23 @@ public class DishController {
      * @return
      */
     @GetMapping("/list")
-    public R<List<Dish>> gList(Dish dish){
+    public R<List<DishDto>> gList(Dish dish){
         LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
         wrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
         wrapper.eq(dish.getCategoryId() != null, Dish::getCategoryId, dish.getCategoryId());
         wrapper.eq(Dish::getStatus, 1);
         List<Dish> list = dishService.list(wrapper);
-        return R.success(list);
+
+        List<DishDto> ret = list.stream().map((item) -> {
+            DishDto dishDto = new DishDto();
+            BeanUtils.copyProperties(item, dishDto);
+            LambdaQueryWrapper<DishFlavor> wrapper1 = new LambdaQueryWrapper<>();
+            wrapper1.eq(DishFlavor::getDishId, item.getId());
+            List<DishFlavor> list1 = dishFlavorService.list(wrapper1);
+            dishDto.setFlavors(list1);
+            return dishDto;
+        }).toList();
+
+        return R.success(ret);
     }
 }

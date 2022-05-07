@@ -57,7 +57,7 @@ public class SetmealDish implements Serializable {
     private Long updateUser;
 
 
-    @TableLogic
+//    @TableLogic
     @TableField(fill = FieldFill.INSERT)
     //是否删除
     private Integer isDeleted;
