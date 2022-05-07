@@ -77,4 +77,13 @@ public class UserController {
         }
         return R.error("手机号为空");
     }
+
+    /**
+     * 登出
+     */
+    @PostMapping("/loginout")
+    public R<String> logour(HttpSession session){
+        session.removeAttribute("user");
+        return R.success("logout");
+    }
 }

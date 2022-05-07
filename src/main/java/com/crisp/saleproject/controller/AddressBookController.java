@@ -1,6 +1,7 @@
 package com.crisp.saleproject.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.crisp.saleproject.common.BaseContext;
 import com.crisp.saleproject.common.R;
 import com.crisp.saleproject.entity.AddressBook;
 import com.crisp.saleproject.service.AddressBookService;
@@ -97,5 +98,18 @@ public class AddressBookController {
     public R<String> delteByid(Long ids){
         addressBookService.removeById(ids);
         return R.success("删除成功");
+    }
+
+    /**
+     * 获取默认地址
+     */
+    @GetMapping("/default")
+    public R<AddressBook> getDefault(){
+        Long userId = BaseContext.getCurrentId();
+        LambdaQueryWrapper<AddressBook> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(AddressBook::getIsDefault, 1);
+        wrapper.eq(AddressBook::getUserId, userId);
+        AddressBook addressBook = addressBookService.getOne(wrapper);
+        return R.success(addressBook);
     }
 }
