@@ -11,6 +11,7 @@ import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 /**
  * 1 获取请求URI
@@ -41,9 +42,15 @@ public class LoginFilter implements Filter {
                 "/front/**",
                 "/common/**",
                 "/user/sendMsg",
-                "/user/login"
+                "/user/login",
         };
-
+        String[] urlsBaned = {
+                "/redis*",
+        };
+        if(check(urlsBaned, uri)){
+            response.getWriter().write(JSON.toJSONString(R.error("gun")));
+            return;
+        }
         boolean checkRet = check(urls, uri);
         if(checkRet){
             filterChain.doFilter(request, response);
