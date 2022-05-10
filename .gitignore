@@ -12,3 +12,5 @@
 *.idea
 /src/test
 code.txt
+
+*.iml

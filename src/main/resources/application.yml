@@ -11,9 +11,8 @@ spring:
       username: root
       password: Aa2314679520
   redis:
-    host: 124.222.231.102
+    host: localhost
     port: 6379
-    password: Aa2314679520
     database: 0 #擦做0号数据库
     jedis:
       #连接池配置
