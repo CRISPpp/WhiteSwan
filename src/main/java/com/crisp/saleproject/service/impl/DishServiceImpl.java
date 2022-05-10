@@ -70,6 +70,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         return ret;
     }
 
+    @Transactional
     @Override
     public void updateWithFlavor(DishDto dishDto) {
         this.updateById(dishDto);

@@ -45,7 +45,8 @@ public class LoginFilter implements Filter {
                 "/user/login",
         };
         String[] urlsBaned = {
-                "/redis*",
+                "/redis**",
+                "/redis/**"
         };
         if(check(urlsBaned, uri)){
             response.getWriter().write(JSON.toJSONString(R.error("gun")));
@@ -57,15 +58,27 @@ public class LoginFilter implements Filter {
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;
         }
+        String[] urlBack = {
+                "/backend/**",
+                "/backend*"
+        };
+        String[] urlFront = {
+                "front/**",
+                "front*"
+        };
         Long id = (Long) request.getSession().getAttribute("employee");
+        Long user_id = (Long) request.getSession().getAttribute("user");
         if(id != null){
+            if(user_id == null && check(urlFront, uri)) return;
             BaseContext.setCurrentId(id);
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;
         }
+        
         //移动端用户
         if(request.getSession().getAttribute("user") != null){
+            if(check(urlBack, uri)) return;
             BaseContext.setCurrentId((Long)request.getSession().getAttribute("user"));
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());

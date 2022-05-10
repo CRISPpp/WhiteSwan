@@ -9,20 +9,24 @@ import com.crisp.saleproject.utils.SMSUtils;
 import com.crisp.saleproject.utils.ValidateCodeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpSession;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
 @RequestMapping("/user")
 public class UserController {
     @Autowired
-    UserService userService;
+    private UserService userService;
 
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 发送验证码
      * @param user
@@ -39,8 +43,10 @@ public class UserController {
             log.info("code =====" + vcode);
             //发送短信
             SMSUtils.sendMessagetxt("WhiteSwan", "", phone, vcode);
-            //存到session或者redis
-            session.setAttribute(phone, vcode);
+//            //存到session或者redis
+//            session.setAttribute(phone, vcode);
+            //缓存到redis，5分钟
+            redisTemplate.opsForValue().set(phone, vcode,5, TimeUnit.MINUTES);
             return R.success("发送成功");
         }
         return R.error("手机号为空");
@@ -56,8 +62,10 @@ public class UserController {
         String phone = userDto.getPhone();
         String code =userDto.getCode();
         if(phone != null) {
-            //获取session手机号
-            String vcode = (String) session.getAttribute(phone);
+//            //获取session手机号
+//            String vcode = (String) session.getAttribute(phone);
+            //从redis获取验证码
+            String vcode = (String) redisTemplate.opsForValue().get(phone);
             //校验
             if(vcode == null || !vcode.equals(code)){
                 return R.error("验证码错误");
@@ -73,6 +81,8 @@ public class UserController {
                 userService.save(user);
             }
             session.setAttribute("user", user.getId());
+            //登录成功删除缓存的验证码
+            redisTemplate.delete(phone);
             return R.success(user);
         }
         return R.error("手机号为空");
