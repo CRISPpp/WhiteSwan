@@ -69,16 +69,14 @@ public class LoginFilter implements Filter {
         Long id = (Long) request.getSession().getAttribute("employee");
         Long user_id = (Long) request.getSession().getAttribute("user");
         if(id != null){
-            if(user_id == null && check(urlFront, uri)) return;
             BaseContext.setCurrentId(id);
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());
             return;
         }
-        
+
         //移动端用户
         if(request.getSession().getAttribute("user") != null){
-            if(check(urlBack, uri)) return;
             BaseContext.setCurrentId((Long)request.getSession().getAttribute("user"));
             filterChain.doFilter(request, response);
             log.info("拦截到请求：{} : 放行",request.getRequestURI());

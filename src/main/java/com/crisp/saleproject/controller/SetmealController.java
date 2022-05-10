@@ -15,6 +15,11 @@ import com.crisp.saleproject.service.SetmealDishService;
 import com.crisp.saleproject.service.SetmealService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -38,6 +43,7 @@ public class SetmealController {
      * @param setmealDto
      * @return
      */
+    @CacheEvict(value = "setmealCache", allEntries = true)
     @PostMapping
     public R<String> saveSetmeal(@RequestBody SetmealDto setmealDto){
         setmealService.saveWithDish(setmealDto);
@@ -76,6 +82,7 @@ public class SetmealController {
     /**
      * 删除
      */
+    @CacheEvict(value = "setmealCache", allEntries = true) //清除setmealCache下所有的缓存数据
     @DeleteMapping
     public R<String> delSetmeal(@RequestParam Long[] ids){
         boolean flag = false;
@@ -102,6 +109,12 @@ public class SetmealController {
     /**
      * 停售
      */
+    /**
+     * CachePut：将返回值存到缓存中
+     * value：缓存的名称，一个缓存可有多个key
+     * key：key
+     */
+
     @PostMapping("/status/0")
     public R<String> stopSale(@RequestParam Long[] ids){
         for (Long id : ids) {
@@ -115,6 +128,12 @@ public class SetmealController {
     /**
      * 启售
      */
+    /**
+     * CacheEvict：删除缓存的数据
+     * value：缓存的名称，一个缓存可有多个key
+     * key：key
+     */
+
     @PostMapping("/status/1")
     public R<String> openSale(@RequestParam Long[] ids){
         for (Long id : ids) {
@@ -145,6 +164,7 @@ public class SetmealController {
     /**
      * 请求list
      */
+    @Cacheable(value = "setmealCache", key = "#setmeal.categoryId + '_' + #setmeal.status")
     @GetMapping("/list")
     public R<List<SetmealDto>> getList(Setmeal setmeal){
         LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
