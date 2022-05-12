@@ -43,6 +43,10 @@ public class LoginFilter implements Filter {
                 "/common/**",
                 "/user/sendMsg",
                 "/user/login",
+                "/doc.html",
+                "/webjars/**",
+                "/swagger-resources",
+                "/v2/api-docs"
         };
         String[] urlsBaned = {
                 "/redis**",
